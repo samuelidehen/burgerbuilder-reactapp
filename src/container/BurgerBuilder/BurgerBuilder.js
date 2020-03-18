@@ -48,6 +48,7 @@ export default class BurgerBuilder extends Component {
 
   purchaseContinueHandler = () => {
     alert("You continued");
+    this.purchaseCancelHandler();
   };
 
   addIngredientHandler = type => {
@@ -96,6 +97,7 @@ export default class BurgerBuilder extends Component {
             ingredients={ingredients}
             purchaseCanceled={this.purchaseCancelHandler}
             purchaseContinue={this.purchaseContinueHandler}
+            price={totalPrice}
           />
         </Modal>
         <Burger ingredients={ingredients} />
