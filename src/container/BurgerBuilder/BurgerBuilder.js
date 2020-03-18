@@ -2,6 +2,8 @@ import React, { Component } from "react";
 import Aux from "../../hoc/Aux";
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
+import Modal from "../../components/UI/Modal/Modal";
+import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 const INGREDIENTS_PRICE = {
   salad: 0.7,
   cheese: 1.5,
@@ -16,7 +18,19 @@ export default class BurgerBuilder extends Component {
       cheese: 0,
       meat: 0
     },
-    totalPrice: 5
+    totalPrice: 5,
+    purchasable: false
+  };
+
+  updatePurchasable = ingredients => {
+    const sum = Object.keys(ingredients)
+      .map(ingrKey => ingredients[ingrKey])
+      .reduce((sum, er) => {
+        return sum + er;
+      }, 0);
+    this.setState({
+      purchasable: sum > 0
+    });
   };
 
   addIngredientHandler = type => {
@@ -32,6 +46,7 @@ export default class BurgerBuilder extends Component {
       ingredients: UpdatedIngredients,
       totalPrice: newPrice
     });
+    this.updatePurchasable(UpdatedIngredients);
   };
   removeIngredientHandler = type => {
     const updatedCount =
@@ -47,20 +62,29 @@ export default class BurgerBuilder extends Component {
       ingredients: UpdatedIngredients,
       totalPrice: newPrice
     });
+    this.updatePurchasable(UpdatedIngredients);
   };
   render() {
     const { ingredients } = this.state;
+    const { totalPrice } = this.state;
     const disabledInfo = { ...ingredients };
+    const { purchasable } = this.state;
     for (let key in disabledInfo) {
       disabledInfo[key] = disabledInfo[key] <= 0;
     }
     return (
       <Aux>
+        <Modal>
+          {" "}
+          <OrderSummary ingredients={ingredients} />
+        </Modal>
         <Burger ingredients={ingredients} />
         <BuildControls
           ingredientAdded={this.addIngredientHandler}
           ingredientRemoved={this.removeIngredientHandler}
           disabled={disabledInfo}
+          price={totalPrice}
+          purchasable={purchasable}
         />
       </Aux>
     );
