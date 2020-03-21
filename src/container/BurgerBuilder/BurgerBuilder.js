@@ -5,7 +5,9 @@ import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import Modal from "../../components/UI/Modal/Modal";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import Spinner from "../../components/UI/Spinner/Spinner";
-import axios from "../../axios-orders";
+import axiosInstance from "../../axios-orders";
+import axios from "axios";
+
 import WithErrorHandler from "../../hoc/WithErrorHandler/WithErrorHandler";
 
 class BurgerBuilder extends Component {
@@ -54,7 +56,7 @@ class BurgerBuilder extends Component {
       },
       deliveryMethod: "Fastest"
     };
-    axios
+    axiosInstance
       .post("/orders.json", order)
       .then(response =>
         this.setState({
@@ -102,22 +104,20 @@ class BurgerBuilder extends Component {
   };
 
   componentDidMount() {
-    axios
-      .get("https://burger-reactapp-bf88e.firebaseio.com/ingredients.json")
-      .then(response =>
+    const reqIngredient = axios.get(
+      "https://burger-reactapp-bf88e.firebaseio.com/ingredients.json"
+    );
+    const reqIngredientPrice = axios.get(
+      "https://burger-reactapp-bf88e.firebaseio.com/ingredients_price.json"
+    );
+    axios.all([reqIngredient, reqIngredientPrice]).then(
+      axios.spread((...response) => {
         this.setState({
-          ingredients: response.data
-        })
-      );
-    axios
-      .get(
-        "https://burger-reactapp-bf88e.firebaseio.com/ingredients_price.json"
-      )
-      .then(response =>
-        this.setState({
-          ingredient_price: response.data
-        })
-      );
+          ingredients: response[0].data,
+          ingredient_price: response[1].data
+        });
+      })
+    );
   }
 
   render() {
