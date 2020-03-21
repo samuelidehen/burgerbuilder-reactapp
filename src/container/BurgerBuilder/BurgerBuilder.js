@@ -68,7 +68,7 @@ class BurgerBuilder extends Component {
           loading: false
         })
       );
-    this.purchaseCancelHandler();
+    this.props.history.push("/checkout");
   };
 
   addIngredientHandler = type => {
