@@ -7,19 +7,15 @@ import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import Spinner from "../../components/UI/Spinner/Spinner";
 import axios from "../../axios-orders";
 import WithErrorHandler from "../../hoc/WithErrorHandler/WithErrorHandler";
-const INGREDIENTS_PRICE = {
-  salad: 0.7,
-  cheese: 1.5,
-  meat: 1.2,
-  bacon: 1.3
-};
+
 class BurgerBuilder extends Component {
   state = {
     ingredients: null,
     totalPrice: 5,
     purchasable: false,
     purchasing: false,
-    loading: false
+    loading: false,
+    ingredient_price: null
   };
 
   updatePurchasable = ingredients => {
@@ -79,7 +75,7 @@ class BurgerBuilder extends Component {
       ...this.state.ingredients
     };
     UpdatedIngredients[type] = updatedCount;
-    const priceAddition = INGREDIENTS_PRICE[type];
+    const priceAddition = this.state.ingredient_price[type];
     const oldPrice = this.state.totalPrice;
     const newPrice = oldPrice + priceAddition;
     this.setState({
@@ -95,7 +91,7 @@ class BurgerBuilder extends Component {
       ...this.state.ingredients
     };
     UpdatedIngredients[type] = updatedCount;
-    const priceReduction = INGREDIENTS_PRICE[type];
+    const priceReduction = this.state.ingredient_price[type];
     const oldPrice = this.state.totalPrice;
     const newPrice = oldPrice - priceReduction;
     this.setState({
@@ -111,6 +107,15 @@ class BurgerBuilder extends Component {
       .then(response =>
         this.setState({
           ingredients: response.data
+        })
+      );
+    axios
+      .get(
+        "https://burger-reactapp-bf88e.firebaseio.com/ingredients_price.json"
+      )
+      .then(response =>
+        this.setState({
+          ingredient_price: response.data
         })
       );
   }
