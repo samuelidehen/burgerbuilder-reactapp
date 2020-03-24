@@ -13,7 +13,6 @@ import WithErrorHandler from "../../hoc/WithErrorHandler/WithErrorHandler";
 
 class BurgerBuilder extends Component {
   state = {
-    totalPrice: 5,
     purchasable: false,
     purchasing: false,
     loading: false,
@@ -110,7 +109,7 @@ class BurgerBuilder extends Component {
   }
 
   render() {
-    const { totalPrice, purchasable, purchasing } = this.state;
+    const { purchasable, purchasing } = this.state;
     const disabledInfo = { ...this.props.ings };
 
     for (let key in disabledInfo) {
@@ -129,7 +128,7 @@ class BurgerBuilder extends Component {
             ingredientAdded={this.props.onIngredientAdded}
             ingredientRemoved={this.props.onIngredientRemoved}
             disabled={disabledInfo}
-            price={totalPrice}
+            price={this.props.price}
             purchasable={purchasable}
             ordered={this.purchaseHandler}
           />
@@ -140,7 +139,7 @@ class BurgerBuilder extends Component {
           ingredients={this.props.ings}
           purchaseCanceled={this.purchaseCancelHandler}
           purchaseContinue={this.purchaseContinueHandler}
-          price={totalPrice}
+          price={this.props.price}
         />
       );
     }
@@ -157,7 +156,8 @@ class BurgerBuilder extends Component {
 }
 const mapStateToProps = state => {
   return {
-    ings: state.ingredients
+    ings: state.ingredients,
+    price: state.totalPrice
   };
 };
 const mapDispatchToProps = dispatch => {
