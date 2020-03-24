@@ -25,9 +25,7 @@ class BurgerBuilder extends Component {
       .reduce((sum, er) => {
         return sum + er;
       }, 0);
-    this.setState({
-      purchasable: sum > 0
-    });
+    return sum > 0;
   };
 
   purchaseHandler = () => {
@@ -43,19 +41,8 @@ class BurgerBuilder extends Component {
   };
 
   purchaseContinueHandler = () => {
-    const queryParams = [];
-    for (let i in this.state.ingredients) {
-      queryParams.push(
-        encodeURIComponent(i) +
-          "=" +
-          encodeURIComponent(this.state.ingredients[i])
-      );
-    }
-    queryParams.push("price=" + this.state.totalPrice);
-    const queryString = queryParams.join("&");
     this.props.history.push({
-      pathname: "/checkout",
-      search: "?" + queryString
+      pathname: "/checkout"
     });
   };
 
@@ -109,7 +96,7 @@ class BurgerBuilder extends Component {
   }
 
   render() {
-    const { purchasable, purchasing } = this.state;
+    const { purchasing } = this.state;
     const disabledInfo = { ...this.props.ings };
 
     for (let key in disabledInfo) {
@@ -129,7 +116,7 @@ class BurgerBuilder extends Component {
             ingredientRemoved={this.props.onIngredientRemoved}
             disabled={disabledInfo}
             price={this.props.price}
-            purchasable={purchasable}
+            purchasable={this.updatePurchasable(this.props.ings)}
             ordered={this.purchaseHandler}
           />
         </Aux>
