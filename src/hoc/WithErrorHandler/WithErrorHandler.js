@@ -7,7 +7,7 @@ export default function WithErrorHandler(WrappedComponent, axios) {
     state = {
       error: null
     };
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
       this.reqInterceptor = axios.interceptors.request.use(req => {
         this.setState({
           error: null
@@ -24,7 +24,7 @@ export default function WithErrorHandler(WrappedComponent, axios) {
       );
     }
 
-    componentWillUnmount() {
+    UNSAFE_componentWillUnmount() {
       axios.interceptors.request.eject(this.reqInterceptor);
       axios.interceptors.response.eject(this.respInterceptor);
     }
