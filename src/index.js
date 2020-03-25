@@ -6,7 +6,7 @@ import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
 import { createStore, compose } from "redux";
 import registerServiceWorker from "./registerServiceWorker";
-import reducer from "./store/reducer";
+import reducer from "./store/reducers/burgerBuilder";
 
 const store = createStore(
   reducer,
