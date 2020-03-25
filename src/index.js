@@ -4,13 +4,17 @@ import "./index.css";
 import App from "./App";
 import { BrowserRouter } from "react-router-dom";
 import { Provider } from "react-redux";
-import { createStore, compose, applyMiddleware } from "redux";
+import { createStore, compose, applyMiddleware, combineReducers } from "redux";
 import registerServiceWorker from "./registerServiceWorker";
-import reducer from "./store/reducers/burgerBuilder";
+import burgerBuilder from "./store/reducers/burgerBuilder";
+import authReducer from "./store/reducers/auth";
 import thunk from "redux-thunk";
-
+const rootReducer = combineReducers({
+  burgerReducer: burgerBuilder,
+  auth: authReducer
+});
 const store = createStore(
-  reducer,
+  rootReducer,
   compose(
     applyMiddleware(thunk),
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
