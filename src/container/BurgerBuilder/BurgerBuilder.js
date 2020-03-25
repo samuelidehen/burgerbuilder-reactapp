@@ -15,7 +15,6 @@ class BurgerBuilder extends Component {
   state = {
     purchasable: false,
     purchasing: false,
-    loading: false,
     ingredient_price: null
   };
 
@@ -79,20 +78,21 @@ class BurgerBuilder extends Component {
   };
 
   componentDidMount() {
-    const reqIngredient = axios.get(
-      "https://burger-reactapp-bf88e.firebaseio.com/ingredients.json"
-    );
-    const reqIngredientPrice = axios.get(
-      "https://burger-reactapp-bf88e.firebaseio.com/ingredients_price.json"
-    );
-    axios.all([reqIngredient, reqIngredientPrice]).then(
-      axios.spread((...response) => {
-        this.setState({
-          ingredients: response[0].data,
-          ingredient_price: response[1].data
-        });
-      })
-    );
+    this.props.onInitIngredient();
+    // const reqIngredient = axios.get(
+    //   "https://burger-reactapp-bf88e.firebaseio.com/ingredients.json"
+    // );
+    // const reqIngredientPrice = axios.get(
+    //   "https://burger-reactapp-bf88e.firebaseio.com/ingredients_price.json"
+    // );
+    // axios.all([reqIngredient, reqIngredientPrice]).then(
+    //   axios.spread((...response) => {
+    //     this.setState({
+    //       ingredients: response[0].data,
+    //       ingredient_price: response[1].data
+    //     });
+    //   })
+    // );
   }
 
   render() {
@@ -103,9 +103,7 @@ class BurgerBuilder extends Component {
       disabledInfo[key] = disabledInfo[key] <= 0;
     }
     let orderSummary = null;
-    if (this.state.loading) {
-      orderSummary = <Spinner />;
-    }
+
     let burger = <Spinner />;
     if (this.props.ings) {
       burger = (
@@ -144,7 +142,8 @@ class BurgerBuilder extends Component {
 const mapStateToProps = state => {
   return {
     ings: state.ingredients,
-    price: state.totalPrice
+    price: state.totalPrice,
+    error: state.error
   };
 };
 const mapDispatchToProps = dispatch => {
@@ -153,7 +152,8 @@ const mapDispatchToProps = dispatch => {
       dispatch(BurgerBuilderaction.addIngredient(ingName)),
 
     onIngredientRemoved: ingName =>
-      dispatch(BurgerBuilderaction.removeIngredient(ingName))
+      dispatch(BurgerBuilderaction.removeIngredient(ingName)),
+    onInitIngredient: () => dispatch(BurgerBuilderaction.initIngredient())
   };
 };
 export default connect(
